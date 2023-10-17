@@ -1,11 +1,10 @@
 # app/models.py
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
-from sqlalchemy.types import Date
 #from my_database import Base,engine,SessionLocal
 from sqlalchemy.orm import relationship
 
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine,TIMESTAMP
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -24,7 +23,25 @@ class UserCreate(Base):
     username = Column(String, index=True)
     email = Column(String, index = True,unique=True)  #change to unique
     password = Column(String, index=True)
-    
+
+class WatchList(Base):
+    __tablename__ = "watchlists"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.user_id",ondelete="CASCADE"),nullable = False)
+    item_id = Column(Integer, ForeignKey("items.item_id",ondelete="CASCADE"),nullable = False)
+    price = Column(Float)
+    date = Column(TIMESTAMP)
+
+
+
+class Item(Base):
+    __tablename__ = "items"
+    item_id = Column(Integer,primary_key=True,index=True)
+    link = Column(String)
+    site = Column(String)
+    price = Column(Float)
+    date = Column(TIMESTAMP)
+        
 try:
     Base.metadata.create_all(engine)
 
