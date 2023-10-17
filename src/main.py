@@ -12,6 +12,8 @@ import csv
 # local imports
 import scraper.scraper as scr
 
+#added by vdeenda
+from models import UserCreate,SessionLocal,engine
 
 # response type define
 class jsonScraps(BaseModel):
@@ -298,6 +300,28 @@ def getFloatPrice(price):
         float_price = float(temp)
     return float_price
 
+#Pydantic models for User Registration
+class UserRegister(BaseModel):
+    username: str
+    password: str
+    email: str
+    confpassword: str
 
+class UserCreatePy(BaseModel):
+    username: str
+    password: str
+    email: str
+
+#api end point for creating user in db
+@app.post("/users/",response_model= UserCreatePy) 
+async def create_user(user:UserRegister):
+    db_user = UserCreate(username=user.username,password=user.password,email=user.email)
+    db = SessionLocal()
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    db.close()
+    return db_user
+    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

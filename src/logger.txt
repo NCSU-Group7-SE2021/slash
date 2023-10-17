@@ -29,3 +29,4 @@ tg query:dell
 eb query:dell
 bb query:dell
 all query:dell
+cc query:shoes
