@@ -29,3 +29,13 @@ tg query:dell
 eb query:dell
 bb query:dell
 all query:dell
+cc query:laptop
+az query:laptop
+tg query:laptop
+tg query:laptop
+cc query:laptop
+wm query:undefined
+undefined query:undefined
+undefined query:undefined
+undefined query:undefined
+wm query:watch
