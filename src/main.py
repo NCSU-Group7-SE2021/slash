@@ -13,7 +13,9 @@ import csv
 import scraper.scraper as scr
 
 #added by vdeenda
-from models import UserCreate,SessionLocal,engine
+from models import UserCreate,Item,SessionLocal,engine,WatchList
+from datetime import datetime
+from sqlalchemy import select,distinct
 
 # response type define
 class jsonScraps(BaseModel):
@@ -323,5 +325,47 @@ async def create_user(user:UserRegister):
     db.close()
     return db_user
     
+class WatchListPy(BaseModel):
+    user_id:int
+    price:float
+    date:str
+    link:str
+    site:str
+
+
+@app.post("/watchlist/")
+async def add_item(watchlistitem:WatchListPy):
+    date_format = "%d/%m/%Y %H:%M:%S"
+    my_date = datetime.strptime(watchlistitem.date, date_format)
+    item = Item(link=watchlistitem.link,site = watchlistitem.site,price=watchlistitem.price,date=my_date)
+    #If the item is present in Item Master DB don't add
+    results = checkItem(item)
+    if(len(results)==0):
+        db = SessionLocal()
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        db.close()
+        addToWatchList(watchlistitem,item.item_id,my_date)
+    else:
+        addToWatchList(watchlistitem,results[0][0],my_date)
+    return "added"
+
+def checkItem(item:Item):
+    db = SessionLocal()
+    stmt = select(distinct(Item.item_id)).where(Item.link == item.link)
+    results = db.execute(stmt).fetchall()
+    db.close()
+    return results
+
+def addToWatchList(watchlist,item_id_master,my_date):
+    db = SessionLocal() 
+    item_watchlist = WatchList(user_id=watchlist.user_id,item_id=item_id_master,price=watchlist.price,date=my_date)
+    #print(item_watchlist.user_id,item_watchlist.item_id,item_watchlist.price,item_watchlist.date)
+    db.add(item_watchlist)
+    db.commit()
+    db.refresh(item_watchlist)
+    db.close()
+    return    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
