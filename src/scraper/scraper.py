@@ -38,29 +38,29 @@ def httpsGet(URL):
         # TODO add logger
         return None
     
-    def congifMappingFunction(url):
-        second_part = url.split(".")[1]
+def congifMappingFunction(url):
+    second_part = url.split(".")[1]
 
-        # firstcharacter after'.'
-        w = second_part[0]
-        if w == "a":
-           return AMAZON
-        elif w == "w":
-            return WALMART
-        elif w == "c":
-            return COSTCO
-        elif w == "b":
-            return BESTBUY
-        elif w == "t":
-            # https://www.target.com/s?searchTerm=mobile+phone&tref=typeahead%7Cterm%7Cmobile+phone%7C%7C%7Chistory
-            start_index = url.find("=")
-            end_index = url.find("&")
-            substring = url[start_index + 1 : end_index]
-            return scrape_target(substring)
-        elif w == "e":
-            # https://www.ebay.com/sch/i.html?_nkw=keyboard
-            s_index = url.find("=")
-            sub = url[s_index:]
+    # firstcharacter after'.'
+    w = second_part[0]
+    if w == "a":
+        return AMAZON
+    elif w == "w":
+        return WALMART
+    elif w == "c":
+        return COSTCO
+    elif w == "b":
+        return BESTBUY
+    elif w == "t":
+        # https://www.target.com/s?searchTerm=mobile+phone&tref=typeahead%7Cterm%7Cmobile+phone%7C%7C%7Chistory
+        start_index = url.find("=")
+        end_index = url.find("&")
+        substring = url[start_index + 1 : end_index]
+        return scrape_target(substring)
+    elif w == "e":
+        # https://www.ebay.com/sch/i.html?_nkw=keyboard
+        s_index = url.find("=")
+        sub = url[s_index:]
         return scrape_ebay(sub)
 
 
