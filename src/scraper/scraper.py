@@ -125,3 +125,16 @@ def scrape(args, scrapers):
         overall = form.sortList(overall, sort_by, args['des'])
 
     return overall
+
+def findConfig(site):
+    if site == 'amazon':
+        return AMAZON
+    elif site == 'walmart':
+        return BESTBUY
+    elif site == 'costco':
+        return COSTCO
+    elif site == 'target':
+        return scrape_target
+    elif site == 'bestbuy':
+        return BESTBUY
+    return scrape_ebay
