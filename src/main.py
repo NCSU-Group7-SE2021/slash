@@ -12,6 +12,14 @@ import csv
 # local imports
 import scraper.scraper as scr
 
+#added by vdeenda
+from models import UserCreate,Item,SessionLocal,engine,WatchList
+from datetime import datetime,timedelta
+from sqlalchemy import select,distinct
+from celery import Celery
+import scraper.formattr as form
+from scraper.scraper import httpsGet,findConfig
+
 
 # response type define
 class jsonScraps(BaseModel):
@@ -38,7 +46,7 @@ class analysisTopCostJson(BaseModel):
 
 
 app = FastAPI()
-
+celeryapp = Celery('main', broker='redis://localhost:6379/0')
 origins = [
     "http://localhost:3000",
 ]
@@ -298,6 +306,110 @@ def getFloatPrice(price):
         float_price = float(temp)
     return float_price
 
+#Pydantic models for User Registration
+class UserRegister(BaseModel):
+    username: str
+    password: str
+    email: str
+    confpassword: str
 
+class UserCreatePy(BaseModel):
+    username: str
+    password: str
+    email: str
+
+#api end point for creating user in db
+@app.post("/users/",response_model= UserCreatePy) 
+async def create_user(user:UserRegister):
+    db_user = UserCreate(username=user.username,password=user.password,email=user.email)
+    db = SessionLocal()
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    db.close()
+    return db_user
+    
+class WatchListPy(BaseModel):
+    user_id:int
+    price:float
+    date:str
+    link:str
+    site:str
+
+
+@app.post("/watchlist/")
+async def add_item(watchlistitem:WatchListPy):
+    date_format = "%d/%m/%Y %H:%M:%S"
+    my_date = datetime.strptime(watchlistitem.date, date_format)
+    item = Item(link=watchlistitem.link,site = watchlistitem.site,price=watchlistitem.price,date=my_date)
+    #If the item is present in Item Master DB don't add
+    results = checkItem(item)
+    if(len(results)==0):
+        db = SessionLocal()
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        db.close()
+        addToWatchList(watchlistitem,item.item_id,my_date)
+    else:
+        addToWatchList(watchlistitem,results[0][0],my_date)
+    return "added"
+
+def checkItem(item:Item):
+    db = SessionLocal()
+    stmt = select(distinct(Item.item_id)).where(Item.link == item.link)
+    results = db.execute(stmt).fetchall()
+    db.close()
+    return results
+
+def addToWatchList(watchlist,item_id_master,my_date):
+    db = SessionLocal() 
+    item_watchlist = WatchList(user_id=watchlist.user_id,item_id=item_id_master,price=watchlist.price,date=my_date)
+    #print(item_watchlist.user_id,item_watchlist.item_id,item_watchlist.price,item_watchlist.date)
+    db.add(item_watchlist)
+    db.commit()
+    db.refresh(item_watchlist)
+    db.close()
+    return    
+
+#Scheduler task
+urlList = set()
+@celeryapp.task
+def check_database_record():
+    #find the item_id associated for watchlist table\
+    db = SessionLocal()
+    stmt = select(distinct(WatchList.item_id))
+    item_id_lists = db.execute(stmt).fetchall()   #list of item ids for which we have to scrape
+    for item_id in item_id_lists:
+        stmt2 = select(Item.link,Item.site).where(Item.item_id == item_id[0])
+        res = db.execute(stmt2).fetchall()
+        urlList.add((res[0][0],res[0][1]))
+    db.close()
+    #scrape these links present in urlList
+    for url in urlList:
+        page =  httpsGet(url[0])
+        if not page:
+            print('page not found')
+            return
+        config = findConfig(url[1])   #custom function to map url to website name to retrieve config file
+        results = page.find_all(config['item_component'], config['item_indicator']) #results not returning. WHY???
+        print('results:',results)
+        priceList = []
+        for res in results:
+            title = res.select(config['title_indicator'])
+            price = res.select(config['price_indicator'])
+            link = res.select(config['link_indicator'])
+            product = form.formatResult(config['site'], title, price, link)
+            priceList.append(product)
+        #print(len(priceList))
+    #add logic for checking lowest price and sending email
+    return
+
+celeryapp.conf.beat_schedule = {
+    'check-database-record': {
+        'task': 'main.check_database_record',
+        'schedule': timedelta(seconds=30),
+    },
+}
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
