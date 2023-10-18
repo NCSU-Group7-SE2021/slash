@@ -14,8 +14,12 @@ import scraper.scraper as scr
 
 #added by vdeenda
 from models import UserCreate,Item,SessionLocal,engine,WatchList
-from datetime import datetime
+from datetime import datetime,timedelta
 from sqlalchemy import select,distinct
+from celery import Celery
+import scraper.formattr as form
+from scraper.scraper import httpsGet,findConfig
+
 
 # response type define
 class jsonScraps(BaseModel):
@@ -42,7 +46,7 @@ class analysisTopCostJson(BaseModel):
 
 
 app = FastAPI()
-
+celeryapp = Celery('main', broker='redis://localhost:6379/0')
 origins = [
     "http://localhost:3000",
 ]
@@ -367,5 +371,45 @@ def addToWatchList(watchlist,item_id_master,my_date):
     db.refresh(item_watchlist)
     db.close()
     return    
+
+#Scheduler task
+urlList = set()
+@celeryapp.task
+def check_database_record():
+    #find the item_id associated for watchlist table\
+    db = SessionLocal()
+    stmt = select(distinct(WatchList.item_id))
+    item_id_lists = db.execute(stmt).fetchall()   #list of item ids for which we have to scrape
+    for item_id in item_id_lists:
+        stmt2 = select(Item.link,Item.site).where(Item.item_id == item_id[0])
+        res = db.execute(stmt2).fetchall()
+        urlList.add((res[0][0],res[0][1]))
+    db.close()
+    #scrape these links present in urlList
+    for url in urlList:
+        page =  httpsGet(url[0])
+        if not page:
+            print('page not found')
+            return
+        config = findConfig(url[1])   #custom function to map url to website name to retrieve config file
+        results = page.find_all(config['item_component'], config['item_indicator']) #results not returning. WHY???
+        print('results:',results)
+        priceList = []
+        for res in results:
+            title = res.select(config['title_indicator'])
+            price = res.select(config['price_indicator'])
+            link = res.select(config['link_indicator'])
+            product = form.formatResult(config['site'], title, price, link)
+            priceList.append(product)
+        #print(len(priceList))
+    #add logic for checking lowest price and sending email
+    return
+
+celeryapp.conf.beat_schedule = {
+    'check-database-record': {
+        'task': 'main.check_database_record',
+        'schedule': timedelta(seconds=30),
+    },
+}
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
