@@ -5,32 +5,44 @@
 [![DOI](https://zenodo.org/badge/431326985.svg)](https://zenodo.org/badge/latestdoi/431326985)
 ![Github](https://img.shields.io/badge/language-python-red.svg)
 ![Github](https://img.shields.io/badge/language-node-red.svg)
-![GitHub issues](https://img.shields.io/github/issues-raw/NCSU-Group7-SE2021/slash)
-![Github closes issues](https://img.shields.io/github/issues-closed-raw/NCSU-Group7-SE2021/slash)
-![Github pull requests](https://img.shields.io/github/issues-pr/NCSU-Group7-SE2021/slash)
-![Github closed pull requests](https://img.shields.io/github/issues-pr-closed/NCSU-Group7-SE2021/slash)
+![GitHub issues](https://img.shields.io/github/issues-raw/NCSU-Group70-CSC505-SE-Fall-23/slash)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/NCSU-Group70-CSC505-SE-Fall-23/slash)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/NCSU-Group70-CSC505-SE-Fall-23/slash)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/NCSU-Group70-CSC505-SE-Fall-23/slash)
 [![Node.js CI](https://github.com/NCSU-Group7-SE2021/slash/actions/workflows/node.js.yml/badge.svg)](https://github.com/NCSU-Group7-SE2021/slash/actions/workflows/node.js.yml)
 [![Python Application](https://github.com/NCSU-Group7-SE2021/slash/actions/workflows/python-app.yml/badge.svg)](https://github.com/NCSU-Group7-SE2021/slash/actions/workflows/python-app.yml)
-[![codecov](https://codecov.io/gh/NCSU-Group7-SE2021/slash/branch/main/graph/badge.svg?token=E9TCZQ6NGF)](https://codecov.io/gh/NCSU-Group7-SE2021/slash)
+[![codecov](https://codecov.io/gh/ChaitanyaS182k/Slash/graph/badge.svg?token=4Y0UH6WSDZ)](https://codecov.io/gh/ChaitanyaS182k/Slash)
 
-Do you love shopping? Are you in search of some good deals while shopping online?! Slash is here to help you look for the best deals!
+On the hunt for incredible online deals? Meet Slash, your savvy shopping sidekick!
 
-Slash is a publicly accessible web API framework that allows one to scrape the most popular e-commerce websites to get the best deals on the searched items across multiple e-commerce websites. Currently supported websites include [Amazon](https://www.amazon.com/), [Walmart](https://www.walmart.com/), [Target](https://www.target.com/), [BestBuy](https://www.bestbuy.com/), [Costco](https://www.costco.com/) and [EBay](https://www.ebay.com/).
+Slash, the openly accessible web API framework, empowers you to scour the top e-commerce sites for unbeatable deals on your favorite items across a multitude of online shopping destinations. Currently supported websites include [Amazon](https://www.amazon.com/), [Walmart](https://www.walmart.com/), [Target](https://www.target.com/), [BestBuy](https://www.bestbuy.com/), [Costco](https://www.costco.com/) and [EBay](https://www.ebay.com/).
 
-- **Fast**: With slash, you can save over 50% of your time by comparing deals across websites within seconds
-- **Easy**: Slash introduces easy to use public APIs to filter, sort and search through the search results
-- **Powerful**: Produces JSON responses that can be easily customised to bring about the desired output
+- **Efficient**: Slash streamlines the deal comparison process, potentially saving you more than 50% of your valuable time.
+- **User-Friendly**: Slash offers user-friendly public APIs for effortlessly filtering, sorting, and searching through search results.
+- **Versatile**: It generates JSON responses that you can easily tailor to achieve the specific outcomes you want.
 
 ---
 
-## :rocket: Improvements over Phase-II
+## :rocket: What new? 
+We have added a lot of new features to slash in our Phase-II.
 
-We have added a lot of new features to slash in our Phase-III.
+1. A web interface for users to interact with the application in a more personalised way.
+2. Substituted web scraping with website product APIs for enhanced efficiency and speed.
 
-1. A web interface for users to interact with the application in a more native way.
-2. Charts and graphs for better visualization of the results.
-3. Analysis for price prediction of products.
-4. Analysis for variety count of products per e-commerce store.
+## :page_facing_up: Why
+
+1. **Anti-Web Scraping Measures**
+   - **Challenge**: Many popular websites, including Amazon and Walmart, employ anti-web scraping mechanisms, making it difficult to extract data using conventional scraping methods.
+
+2. **Transition to APIs**
+   - **Solution**: To overcome this challenge, we've transitioned from traditional web scraping in the backend to leveraging official APIs provided by these websites. This strategic shift not only preserves the project's core functionality but also enhances its robustness.
+
+3. **Enhanced Data Reliability**
+   - **Benefit**: APIs deliver data in a structured and reliable format, reducing the risk of unexpected data disruptions. In contrast, web scraping is vulnerable to frequent changes in website structure, which can break scraping scripts. This transition ensures more dependable and consistent data access.
+
+These changes have significantly improved the reliability and sustainability of data retrieval in our project.
+
+Future possibilities encompass the development of web applications with intuitive interfaces and mobile applications for Android and iOS, all powered by these web APIs. Anyone can construct their custom applications atop this foundation of web APIs.".
 
 ---
 
@@ -43,9 +55,7 @@ We have added a lot of new features to slash in our Phase-III.
   ::
   <a href="#bulb-use-case">Use Case</a>
   ::
-  <a href="#file_cabinet-api">API</a>
-  ::
-  <a href="#page_facing_up-why">Why</a>
+  <a href="#file_cabinet-api">APIs used in the Project</a>
   ::
   <a href="#golf-future-roadmap">Future Roadmap</a>
   ::
@@ -84,7 +94,7 @@ For the frontend setup ensure that [Node](https://nodejs.org/en/) is preinstalle
 
 ```
 cd client
-npm install
+npm install --legacy-peer-deps
 ```
 
 4. Once all the requirements are installed, you will have to `cd` into the `src` folder. Once in the `src` folder, use the python command to run the `main.py` file.
@@ -110,8 +120,7 @@ npm run start
 
 - FastAPI : https://fastapi.tiangolo.com
 - ASGI Server - Uvicorn : https://www.uvicorn.org
-- Docker : https://www.docker.com
-- Azure : https://azure.microsoft.com/en-us/
+
 
 ## :bulb: Use Case
 
@@ -120,47 +129,19 @@ npm run start
 
 ## :file_cabinet: API
 
-## Documentation
+Here are the APIs used in our project:
 
-Documentation can be accessed anytime via the below link.
+- **Amazon**: [Amazon API Documentation](https://www.rainforestapi.com/)
 
-     `https://slash-app-staging.azurewebsites.net/`
+- **Walmart**: [Walmart API Documentation](https://www.bluecartapi.com/walmart-product-data-api)
 
-## Search Items Api
+- **Target**: [Target API Documentation](https://www.redcircleapi.com/target-product-data-api)
 
-Wrapper API to fetch slash scrape results. This API provides a one step solution to access scrape results from all our integrated websites.
+- **Ebay**: We used the Ebay SDK, which can be found in the project's requirements. Please refer to the SDK's official documentation for more information.
 
-    https://slash-app-staging.azurewebsites.net/{site}/{item_name}
+  - **Ebay SDK Documentation**: [Ebay SDK Documentation](https://developer.ebay.com/support/kb-article?KBid=84)
 
-**Required parameters:**
-
-- **site**: _az_ for amazon; _wm_ for walmart; _eb_ for ebay; _cc_ for costco; _tg_ for target and _bb_ for bustbuy. Alternatively '_all_' in site can be used to get results for all sites.
-
-- **item_name**: items to be searched by slash web api; _examples below_
-
-`https://slash-app-staging.azurewebsites.net/az/toys`
-
-`https://slash-app-staging.azurewebsites.net/all/dell`
-
-**Optional parameters**
-
-- **relevant**: string relevance: items will be ordered by relevance. Not supported currently.
-- **order_by_col**: string column_name: items will be ordered by the column name. Currently only the 'price' column ordering is supported.
-- **reverse**: boolean val: items will be displayed in the same or the opposite order based on the value of this parameter.
-- **listLengthInd**: integer len(default value is 10): sets the upper limit on the number of entries that will be displayed
-- **export**: boolean val(default value is false): items can be exported in a csv file;; _examples below_
-
-`https://slash-app-staging.azurewebsites.net/all/dell?export=false&listLengthInd=5&order_by_col=price&reverse=false`
-
-## :page_facing_up: Why
-
-- In a market where we are spoilt for choices, we often look for the best deals.
-- The ubiquity of internet access has leveled the retail playing field, making it easy for individuals and businesses to sell products without geographic limitation. In 2020, U.S. e-commerce sales, receiving a boost due to the COVID-19 pandemic, grew 44% and represented more than 21% of total retail sales, according to e-commerce information source Internet Retailer.
-- The growth of e-commerce has not only changed the way customers shop, but also their expectations of how brands approach customer service, personalize communications, and provide customers choices.
-- E-commerce market has prompted cut throat competition amongst dealers, which is discernable through the price patterns for products of major market players. Price cuts are somewhat of a norm now and getting the best deal for your money can sometimes be a hassle (even while online shopping).
-- This is what Slash aims to reduce by giving you an easy to use, all in one place solution for finding the best deals for your products that major market dealers have to offer!
-- Slash in its current form is for students who wish to get the best deals out of every e-commerce site and can be used by anyone who is willing to develop an application that consumes these web APIs.
-- Future scope includes anything from a web application with a frontend or any Android or IOS application that utilises these Web APIs at their backend. Anyone can build their own custom application on top of these web APIs.
+Please refer to these API documentation links for details on how to use them in our project.
 
 ## :golf: Future Roadmap
 
@@ -172,14 +153,12 @@ Wrapper API to fetch slash scrape results. This API provides a one step solution
 
 # Team Members
 
-## Phase 3 Team Members
+## Phase 2 Team Members
 
-- [Rahul Kalita](https://github.com/rahulkalita8)
-- [Vignesh Muthukumar](https://github.com/vickymhs)
-- [Eshita Arza](https://github.com/ArzaEshita)
-- [Luis](https://github.com/lgdeloss)
-- [Isha Gupta](https://github.com/isha-bansal0115)
-- [Kiran Teja](https://github.com/kirantejatummuri)
+- [Chaitanya Srusti](https://github.com/ChaitanyaS182k)
+- [Nisarg Doshi](https://github.com/Nisarg20)
+- [Aniruddha Rajnekar](https://github.com/Aniruddha-Rajnekar)
+- [Mitesh Agarwal](https://github.com/mitesh24100)
 
 ## :email: Support
 

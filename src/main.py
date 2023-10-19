@@ -20,6 +20,7 @@ class jsonScraps(BaseModel):
     price: str
     website: str
     link: Optional[str] = None
+    image: Optional[str] = None
 
 
 # response type for variety count api
@@ -227,9 +228,9 @@ def getItemInfoByItemName(args):
 
     scrapers = []
     scrapers.append('amazon')
-    scrapers.append('walmart')
-    scrapers.append('target')
-    scrapers.append('costco')
+    #scrapers.append('walmart')
+    #scrapers.append('target')
+    #scrapers.append('costco')
     scrapers.append('bestbuy')
     scrapers.append('ebay')
 

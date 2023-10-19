@@ -12,24 +12,26 @@ Thank you so much for taking an interest in contributing! We are delighted when 
 Understand the current and future scope.
 
 ## 🪲 Reporting Bugs
-This section guides you through submitting a bug report for this repository. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports. Before creating bug reports, please perform a cursory search to see if the problem has already been reported. If it has and the issue is still open, add a comment to the existing issue instead of opening a new one. Note: If you find a Closed issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
+This section serves as your guide for submitting a bug report for this repository. Adhering to these instructions helps both maintainers and the community understand your report, replicate the issue, and locate related reports. Before initiating a bug report, please perform a preliminary search to verify if the problem has already been reported. If you find an open issue matching your concern, add a comment to that existing issue rather than opening a new one. Note: If you encounter a closed issue that appears similar to your experience, open a new issue and include a link to the original issue within the body of your new report.
 
 ### How Do I Submit A (Good) Bug Report?
 
-Bugs are tracked as GitHub issues. After you've determined which repository your bug is related to, create an issue on that repository and provide the following information by filling in the template.
+GitHub issues are the designated method for tracking bugs. After determining the repository relevant to your bug, create an issue on that repository and complete the template by supplying the following details:
 
-Explain the problem and include additional details to help a developer reproduce the problem:
-*	Use a clear and descriptive title for the issue to identify the problem.
-*	Describe the exact steps which reproduce the problem in as many details as possible. Along with it, provide the details regarding the name and version of OS, Python version, configuration of the environment, if used any.
-*	Provide specific examples to demonstrate the steps. Include links to files or GitHub projects, or copy/paste able snippets, which you use in those examples. If you're providing snippets in the issue, use Markdown code blocks.
-*	Describe the behavior you observed after following the steps and point out what exactly is the problem with that behavior.
-*	Explain which behavior you expected to see instead and why.
-*	If the problem is related to performance or memory, include details of the errors encountered with your report.
-*	Can you reliably reproduce the issue? If not, provide details about how often the problem happens and under which conditions it normally happens.
+* Craft a concise and informative title for the issue to clearly identify the problem.
+* Elaborate on the precise steps required to reproduce the problem, offering as many details as possible. Additionally, furnish 
+  information about your operating system's name and version, Python version, and any environmental configurations you've applied.
+* Present specific examples that illustrate the steps, which may encompass links to files or GitHub projects or easily copy-and- 
+  pasteable code snippets if applicable. When providing code snippets in the issue, use Markdown code blocks.
+* Detail the observed behavior following the steps and pinpoint the specific issue with that behavior.
+* Clarify the anticipated behavior you expected to see instead and elucidate the reasons behind your expectations.
+* If the problem pertains to performance or memory issues, include particulars about the encountered errors in your report.
+* Provide insights into your ability to consistently replicate the issue. If replication isn't guaranteed, share information about the 
+  frequency and typical conditions under which the problem usually occurs.
 
 ### Before Submitting A Bug Report
 
-Please check existing bug reports instead of opening a new one. There is a possibility that there are fixes already posted for bugs. If not, you are welcome to submit a bug report and we will look into it as soon as possible.
+Prior to initiating a bug report, please consult existing bug reports to prevent unnecessary duplication. It's conceivable that solutions have already been posted for similar issues. If not, you're encouraged to submit a bug report, and we'll investigate it as promptly as possible.
 
 ## 📝 Suggesting Enhancements and New features
 
@@ -38,12 +40,13 @@ This section guides you through submitting an enhancement suggestion for this pr
 ### How Do I Submit A (Good) Enhancement Suggestion?
 
 Enhancement suggestions are tracked as GitHub issues. Create an issue on that repository with an enhancement or feature tag and provide the following information:
-*	Use a clear and descriptive title for the issue to identify the suggestion.
-*	Provide a step-by-step description of the suggested enhancement in as many details as possible.
-*	Provide specific examples to demonstrate the steps. Include copy/paste able snippets which you use in those examples, as Markdown code blocks.
-*	Describe the current behavior and explain which behavior you expected to see instead and why.
-*   Documentation is an integral part of our repository. Submit updates and improvements to documentations.
-*   Share with us any new exciting feature you might have in mind.
+* Use a clear and descriptive title for the issue to clearly outline your suggestion.
+* Furnish a detailed, step-by-step description of the proposed enhancement, offering as much information as possible.
+* Provide concrete examples to illustrate the steps, incorporating easily copy-and-pasteable code snippets formatted as Markdown code     
+  blocks.
+* Explain the existing behavior and specify the behavior you anticipated instead, along with the reasons for your expectations.
+* Our repository relies on robust documentation. Feel free to contribute updates and enhancements to our documentation.
+* If you have any exciting new features in mind, we'd love to hear about them and explore the possibilities.
 
 ## 🙇 Pull Requests
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
@@ -81,17 +84,8 @@ These Contributing guidelines are adapted from the [Atom's](https://github.com/a
 
 ## 💻 Contributors
 
-### Phase 3 Team Members
-- [Rahul Kalita](https://github.com/rahulkalita8)
-- [Vignesh Muthukumar](https://github.com/vickymhs)
-- [Eshita Arza](https://github.com/ArzaEshita)
-- [Luis](https://github.com/lgdeloss)
-- [Isha Gupta](https://github.com/isha-bansal0115)
-- [Kiran Teja](https://github.com/kirantejatummuri)
-
 ### Phase 2 Team Members
-* [Anirudh Pande](https://github.com/apande95)
-* [Bradley Erickson](https://github.com/bradley-erickson)
-* [Lalit Bangad](https://github.com/lalit10)
-* [Pratyush Vaidya](https://github.com/Pratyush1184)
-* [Urvashi Kar](https://github.com/Urvashi74)
+* [Nisarg](https://github.com/nisarg20)
+* [Aniruddha Rajnekar](https://github.com/Aniruddha-Rajnekar)
+* [Chaitanya Srusti](https://github.com/ChaitanyaS182K)
+* [Mitesh Agarwal](https://github.com/Mitesh24100)
