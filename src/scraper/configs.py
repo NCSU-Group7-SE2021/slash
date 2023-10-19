@@ -6,30 +6,90 @@ from ebaysdk.finding import Connection
 # local imports
 from scraper.formattr import formatTitle
 
-# configs
-WALMART = {
-    'site': 'walmart',
-    'url': 'https://www.walmart.com/search?q=',
-    'item_component': 'div',
-    'item_indicator': {
-        'data-item-id': True
-    },
-    'title_indicator': 'span.lh-title',
-    'price_indicator': 'div.lh-copy',
-    'link_indicator': 'a'
-}
+# individual scrapers
+def scrape_walmart(query):
+    """Scrape Walmarts's api for data
 
-AMAZON = {
-    'site': 'amazon',
-    'url': 'https://www.amazon.com/s?k=',
-    'item_component': 'div',
-    'item_indicator': {
-        'data-component-type': 's-search-result'
-    },
-    'title_indicator': 'h2 a span',
-    'price_indicator': 'span.a-price span',
-    'link_indicator': 'h2 a.a-link-normal'
-}
+    Parameters
+    ----------
+    query: str
+        Item to look for in the api
+
+    Returns
+    ----------
+    items: list
+        List of items from the dict
+    """
+
+    api_url = 'https://api.bluecartapi.com/request'
+
+    page = '/s/' + query
+
+    params = {
+        'api_key': '4797C4706E1F456BBF55908317A04850',
+        'search_term': query,
+        'type': 'search'
+    }
+    
+
+    data = requests.get(api_url, params=params).json()
+
+    items = []
+    for p in data['search_results']:
+        item = {
+            'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+            'title': formatTitle(p['product']['title']),
+            'price': '$' + str(p['offers']['primary']['price']),
+            'website': 'walmart',
+            'link': p['product']['link'],
+            'image': p['product']['main_image']
+        }
+        items.append(item)
+        
+    return items
+
+# idividual scrapper
+def scrape_amazon(query):
+    """Scrape Amazon's api for data
+
+    Parameters
+    ----------
+    query: str
+        Item to look for in the api
+
+    Returns
+    ----------
+    items: list
+        List of items from the dict
+    """
+
+    api_url = 'https://api.rainforestapi.com/request'
+
+    page = '/s/' + query
+
+    params = {
+    'api_key': '8954C1EB93A246A78E8415712ECF3353',
+    'type': 'search',
+    'amazon_domain': 'amazon.com',
+    'search_term': query,
+    }
+    
+    data = requests.get(api_url, params=params).json()
+
+    items = []
+    for p in data['search_results']:
+        if 'price' in p:
+            item = {
+                'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'title': formatTitle(p['title']),  
+                'price': '$' + str(p['price']['value']),
+                'website': 'amazon',
+                'link': p['link'],
+                'image': p['image'],
+            }
+            items.append(item)
+        
+    return items
 
 COSTCO = {
     'site': 'costco',
@@ -41,6 +101,7 @@ COSTCO = {
     'title_indicator': 'span a',
     'price_indicator': 'div.price',
     'link_indicator': 'span.description a',
+    'image_indicator': 'a.product-image-url img',
 }
 
 BESTBUY = {
@@ -48,11 +109,13 @@ BESTBUY = {
     'url': 'https://www.bestbuy.com/site/searchpage.jsp?st=',
     'item_component': 'li',
     'item_indicator': {
-        'class': 'sku-item'
+        'class': 'sku-item',
     },
-    'title_indicator': 'h4.sku-header a',
-    'price_indicator': 'div.priceView-customer-price span',
+    'title_indicator': 'h4.sku-title a',
+    'title': 'div.sku-title h4.sku-header a',
+    'price_indicator': 'div.pricing-price div.priceView-hero-price span',
     'link_indicator': 'a.image-link',
+    'image_indicator': 'a.image-link img',
 }
 
 
@@ -71,38 +134,32 @@ def scrape_target(query):
         List of items from the dict
     """
 
-    api_url = 'https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v1'
+    api_url = 'https://api.redcircleapi.com/request'
 
     page = '/s/' + query
+    
     params = {
-        'key': 'ff457966e64d5e877fdbad070f276d18ecec4a01',
-        'channel': 'WEB',
-        'count': '24',
-        'default_purchasability_filter': 'false',
-        'include_sponsored': 'true',
-        'keyword': query,
-        'offset': '0',
-        'page': page,
-        'platform': 'desktop',
-        'pricing_store_id': '3991',
-        'useragent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0',
-        'visitor_id': 'AAA',
+    'api_key': '041ACFF13B1D4986A58C1F10CFA4D217',
+      'search_term': query,
+      'type': 'search',
     }
 
     data = requests.get(api_url, params=params).json()
 
     items = []
-    for p in data['data']['search']['products']:
+    for p in data['search_results']:
         item = {
             'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            'title': formatTitle(p['item']['product_description']['title']),
-            'price': '$' + str(p['price']['current_retail']),
+            'title': formatTitle(p['product']['title']),
+            'price': '$' + str(p['offers']['primary']['price']),
             'website': 'target',
-            'link': p['item']['enrichment']['buy_url'],
+            'link': p['product']['link'],
+            'image': p['product']['main_image'],
         }
         items.append(item)
-
+        
     return items
+
 
 
 def scrape_ebay(query):
@@ -137,11 +194,12 @@ def scrape_ebay(query):
             'title': formatTitle(p['title']),
             'price': '$' + p['sellingStatus']['currentPrice']['value'],
             'website': 'ebay',
-            'link': p['viewItemURL']
+            'link': p['viewItemURL'],
+            'image': p['galleryURL'],
         }
         items.append(item)
 
     return items
 
 
-CONFIGS = [WALMART, AMAZON, COSTCO, BESTBUY]
+CONFIGS = [COSTCO, BESTBUY]

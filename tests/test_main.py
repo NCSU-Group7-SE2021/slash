@@ -1,8 +1,10 @@
 from os import link
 import unittest
+import sys
 
 from requests.models import Response
-from src.main import getFloatPrice, getItemInfoByItemName, getLowestHighestPriceByWebsite, getVarietyCountByWebsite
+sys.path.insert(0, '../src')
+from main import getFloatPrice, getItemInfoByItemName, getLowestHighestPriceByWebsite, getVarietyCountByWebsite
 
 
 class TestMain(unittest.TestCase):
@@ -26,7 +28,8 @@ class TestMain(unittest.TestCase):
             'search': item_name,
             'sort': 'pr' if order_by_col == 'price' else 'pr',
             'des': reverse,
-            'num': 1
+            'num': 1,
+            'src': ''
         }
 
         response = ['amazon', 'walmart', 'target', 'costco', 'bestbuy', 'ebay']
