@@ -16,26 +16,42 @@ the required format.
 """
 
 
-def formatResult(website, titles, prices, links):
+def formatResult(website, titles, prices, links, images, ratings):
     """
     The formatResult function takes the scraped HTML as input, and extracts the
     necessary values from the HTML code. Ex. extracting a price '$19.99' from
     a paragraph tag.
     """
     
-    title, price, link = '', '', ''
+    title, price, link, image, rating = '', '', '', '', ''
     if titles:
         title = titles[0].get_text().strip()
     if prices:
         price = prices[0].get_text().strip()
     if links:
         link = links[0]['href']
+    if images:
+        try:
+            image = images[0]['src']
+        except KeyError:
+            # Handle the case where 'src' attribute is missing, e.g., set src_image to a default value or log an error.
+            image = "https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&imageId=1276530-847__1&recipeName=350"
+    if ratings:
+        try:
+            rating = ratings[0].get_text().strip()
+        except KeyError:
+            # Handle the case where 'src' attribute is missing, e.g., set src_image to a default value or log an error.
+            rating = "Not Available"
+    else:
+        rating = "Not Available"
     product = {
         'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
         "title": formatTitle(title),
         "price": price,
         "link": f'www.{website}.com{link}',
         "website": website,
+        "image": image,
+        "rating": rating,
     }
     if website == 'costco' or website == 'target':
         product['link'] = f'{link}'

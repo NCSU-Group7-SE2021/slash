@@ -20,6 +20,8 @@ class jsonScraps(BaseModel):
     price: str
     website: str
     link: Optional[str] = None
+    image: Optional[str] = None
+    rating: str
 
 
 # response type for variety count api
@@ -114,6 +116,8 @@ async def search_items_API(
         scrapers.append('costco')
     if site == 'bb' or site == 'all':
         scrapers.append('bestbuy')
+    if site == 'thd' or site == 'all':
+        scrapers.append('homedepot')
     if site == 'eb' or site == 'all':
         scrapers.append('ebay')
 
@@ -232,6 +236,7 @@ def getItemInfoByItemName(args):
     scrapers.append('costco')
     scrapers.append('bestbuy')
     scrapers.append('ebay')
+    scrapers.append('homedepot')
 
     # calling scraper.scrape to fetch results
     itemList = scr.scrape(args=args, scrapers=scrapers)
@@ -240,7 +245,7 @@ def getItemInfoByItemName(args):
 
 def getVarietyCountByWebsite(itemList):
     variety_count_dict = {
-        'amazon': 0, 'walmart': 0, 'target': 0, 'costco': 0, 'bestbuy': 0, 'ebay': 0
+        'amazon': 0, 'walmart': 0, 'target': 0, 'costco': 0, 'bestbuy': 0, 'ebay': 0, 'homedepot': 0
     }
 
     # iterate and parse the itemlist to create a dict of website vs count
@@ -253,19 +258,19 @@ def getVarietyCountByWebsite(itemList):
 
 def getLowestHighestPriceByWebsite(itemList):
     lowest_price_dict = {
-        'amazon': float('inf'), 'walmart': float('inf'), 'target': float('inf'), 'costco': float('inf'), 'bestbuy': float('inf'), 'ebay': float('inf')
+        'amazon': float('inf'), 'walmart': float('inf'), 'target': float('inf'), 'costco': float('inf'), 'bestbuy': float('inf'), 'ebay': float('inf'), 'homedepot': float('inf')
     }
 
     lowest_price_link_dict = {
-        'amazon': "", 'walmart': "", 'target': "", 'costco': "", 'bestbuy': "", 'ebay': ""
+        'amazon': "", 'walmart': "", 'target': "", 'costco': "", 'bestbuy': "", 'ebay': "", 'homedepot': ""
     }
 
     highest_price_dict = {
-        'amazon': 0, 'walmart': 0, 'target': 0, 'costco': 0, 'bestbuy': 0, 'ebay': 0
+        'amazon': 0, 'walmart': 0, 'target': 0, 'costco': 0, 'bestbuy': 0, 'ebay': 0, 'homedepot': 0
     }
 
     highest_price_link_dict = {
-        'amazon': "", 'walmart': "", 'target': "", 'costco': "", 'bestbuy': "", 'ebay': ""
+        'amazon': "", 'walmart': "", 'target': "", 'costco': "", 'bestbuy': "", 'ebay': "", 'homedepot': ""
     }
 
     for item in itemList:
@@ -295,7 +300,7 @@ def getFloatPrice(price):
         if (ch >= '0' and ch <= '9') or (ch == '.'):
             temp += ch
     if temp:
-        float_price = float(temp)
+        float_price = float(temp.split('.')[0])
     return float_price
 
 

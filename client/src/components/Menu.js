@@ -63,6 +63,7 @@ function Menu() {
                 <MenuItem value="cc">Costco</MenuItem>
                 <MenuItem value="tg">Target</MenuItem>
                 <MenuItem value="bb">BestBuy</MenuItem>
+                <MenuItem value="thd">The Home Depot</MenuItem>
                 <MenuItem value="all">All</MenuItem>
               </Select>
             </FormControl>

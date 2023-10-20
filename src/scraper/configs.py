@@ -6,30 +6,6 @@ from ebaysdk.finding import Connection
 # local imports
 from scraper.formattr import formatTitle
 
-# configs
-WALMART = {
-    'site': 'walmart',
-    'url': 'https://www.walmart.com/search?q=',
-    'item_component': 'div',
-    'item_indicator': {
-        'data-item-id': True
-    },
-    'title_indicator': 'span.lh-title',
-    'price_indicator': 'div.lh-copy',
-    'link_indicator': 'a'
-}
-
-AMAZON = {
-    'site': 'amazon',
-    'url': 'https://www.amazon.com/s?k=',
-    'item_component': 'div',
-    'item_indicator': {
-        'data-component-type': 's-search-result'
-    },
-    'title_indicator': 'h2 a span',
-    'price_indicator': 'span.a-price span',
-    'link_indicator': 'h2 a.a-link-normal'
-}
 
 COSTCO = {
     'site': 'costco',
@@ -41,6 +17,8 @@ COSTCO = {
     'title_indicator': 'span a',
     'price_indicator': 'div.price',
     'link_indicator': 'span.description a',
+    'image_indicator': 'div.product-img-holder a.product-image-url img.img-responsive',
+    'rating_indicator': 'div.c-ratings-reviews p.visually-hidden'
 }
 
 BESTBUY = {
@@ -48,17 +26,20 @@ BESTBUY = {
     'url': 'https://www.bestbuy.com/site/searchpage.jsp?st=',
     'item_component': 'li',
     'item_indicator': {
-        'class': 'sku-item'
+        'class': 'sku-item',
     },
-    'title_indicator': 'h4.sku-header a',
-    'price_indicator': 'div.priceView-customer-price span',
+    'title_indicator': 'h4.sku-title a',
+    'title': 'div.sku-title h4.sku-header a',
+    'price_indicator': 'div.pricing-price div.priceView-hero-price span',
     'link_indicator': 'a.image-link',
+    'image_indicator': 'a.image-link img',
+    'rating_indicator': 'div.c-ratings-reviews p.visually-hidden'
 }
+# idividual scrapper
+def scrape_amazon(query):
+    """Scrape Amazon's api for data
 
-
-# individual scrapers
-def scrape_target(query):
-    """Scrape Target's api for data
+    https://www.rainforestapi.com/docs/product-data-api/overview
 
     Parameters
     ----------
@@ -71,42 +52,132 @@ def scrape_target(query):
         List of items from the dict
     """
 
-    api_url = 'https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v1'
+    api_url = 'https://api.rainforestapi.com/request'
 
     page = '/s/' + query
+
     params = {
-        'key': 'ff457966e64d5e877fdbad070f276d18ecec4a01',
-        'channel': 'WEB',
-        'count': '24',
-        'default_purchasability_filter': 'false',
-        'include_sponsored': 'true',
-        'keyword': query,
-        'offset': '0',
-        'page': page,
-        'platform': 'desktop',
-        'pricing_store_id': '3991',
-        'useragent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0',
-        'visitor_id': 'AAA',
+    'api_key': 'ED96ABDD2E0145E1A2E2ABFCEF0A894E',
+    'type': 'search',
+    'amazon_domain': 'amazon.com',
+    'search_term': query,
+    'sort_by': 'price_high_to_low'
+    }
+    
+    data = requests.get(api_url, params=params).json()
+
+    items = []
+    for p in data['search_results']:
+        if 'price' in p and 'rating' in p:
+            item = {
+                'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'title': formatTitle(p['title']),  
+                'price': '$' + str(p['price']['value']),
+                'website': 'amazon',
+                'link': p['link'],
+                'image': p['image'],
+                'rating':str(p['rating'])
+            }
+            items.append(item)
+        
+    return items
+
+# individual scrapers
+def scrape_walmart(query):
+    """Scrape Walmarts's api for data
+
+    https://app.bluecartapi.com/playground
+
+    Parameters
+    ----------
+    query: str
+        Item to look for in the api
+
+    Returns
+    ----------
+    items: list
+        List of items from the dict
+    """
+
+    api_url = 'https://api.bluecartapi.com/request'
+
+    page = '/s/' + query
+
+    params = {
+        'api_key': '924E6940486740DAB0E735363D8ED199',
+        'search_term': query,
+        'type': 'search'
+    }
+    
+
+    data = requests.get(api_url, params=params).json()
+
+    items = []
+    for p in data['search_results']:
+        if 'rating' in p['product']:
+            item = {
+                'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'title': formatTitle(p['product']['title']),
+                'price': '$' + str(p['offers']['primary']['price']),
+                'website': 'walmart',
+                'link': p['product']['link'],
+                'image': p['product']['main_image'],
+                'rating': str(p['product']['rating'])
+            }
+        items.append(item)
+        
+    return items
+
+# individual scrapers
+def scrape_target(query):
+    """Scrape Target's api for data
+
+    https://www.redcircleapi.com/docs/target-product-data-api/overview
+    https://api.redcircleapi.com/request?api_key=35C450DAD7CB44A894C1DA0B6A62C7A6&search_term=highlighter+pens&category_id=5zja3&type=search
+
+    Parameters
+    ----------
+    query: str
+        Item to look for in the api
+
+    Returns
+    ----------
+    items: list
+        List of items from the dict
+    """
+
+    api_url = 'https://api.redcircleapi.com/request'
+
+    page = '/s/' + query
+    
+    params = {
+    'api_key': '8AA0D45E8C9142CEA86618549017210A',
+      'search_term': query,
+      'type': 'search'
     }
 
     data = requests.get(api_url, params=params).json()
 
     items = []
-    for p in data['data']['search']['products']:
-        item = {
-            'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            'title': formatTitle(p['item']['product_description']['title']),
-            'price': '$' + str(p['price']['current_retail']),
-            'website': 'target',
-            'link': p['item']['enrichment']['buy_url'],
-        }
-        items.append(item)
-
+    for p in data['search_results']:
+        if 'price' in p['offers']['primary'] and 'rating' in p['product']:
+            item = {
+                'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'title': formatTitle(p['product']['title']),
+                'price': '$' + str(p['offers']['primary']['price']),
+                'website': 'target',
+                'link': p['product']['link'],
+                'image': p['product']['main_image'],
+                'rating': str(p['product']['rating'])
+            }
+            items.append(item)   
     return items
 
 
 def scrape_ebay(query):
     """Scrape Target's api for data
+
+    https://www.countdownapi.com/docs/ebay-product-data-api/overview
 
     Parameters
     ----------
@@ -137,11 +208,56 @@ def scrape_ebay(query):
             'title': formatTitle(p['title']),
             'price': '$' + p['sellingStatus']['currentPrice']['value'],
             'website': 'ebay',
-            'link': p['viewItemURL']
+            'link': p['viewItemURL'],
+            'image': p['galleryURL'],
+            'rating':'Not Available'
         }
         items.append(item)
 
     return items
 
+def scrape_homedepot(query):
+    """Scrape Target's api for data
 
-CONFIGS = [WALMART, AMAZON, COSTCO, BESTBUY]
+    https://app.bigboxapi.com/playground
+    https://api.bigboxapi.com/request?api_key=087D131F8B774985BD8268E1ADBAB6D1&search_term=lawn+mower&type=search
+
+    Parameters
+    ----------
+    query: str
+        Item to look for in the api
+
+    Returns
+    ----------
+    items: list
+        List of items from the dict
+    """
+
+    params = {
+    'api_key': 'E4FF3BE4CDE146E8B9A00C2BC657F953',
+    'search_term': query,
+    'type': 'search'
+    }
+
+    # make the http GET request to BigBox API
+    data = requests.get('https://api.bigboxapi.com/request', params).json()
+    
+    items = []
+    for p in data['search_results']:
+        if 'rating' in p['product']:
+            item = {
+                'timestamp': datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                'title': formatTitle(p['product']['title']),
+                'price': '$' + str(p['offers']['primary']['price']),
+                'website': 'homedepot',
+                'link': p['product']['link'],
+                'image': p['product']['primary_image'],
+                'rating':str(p['product']['rating'])
+            }
+
+        items.append(item)
+
+    return items
+
+
+CONFIGS = [COSTCO, BESTBUY]

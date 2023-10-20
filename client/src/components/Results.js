@@ -158,6 +158,12 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   {
+    id: "image",
+    numeric: false,
+    disablePadding: false,
+    label: "Image"
+  },
+  {
     id: "timestamp",
     numeric: false,
     disablePadding: false,
@@ -186,6 +192,12 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: "Link"
+  },
+  {
+    rating: "rating",
+    numeric: false,
+    disablePadding: false,
+    label: "Rating"
   }
 ];
 
@@ -334,6 +346,7 @@ export default function Results() {
 
                     return (
                       <TableRow key={index}>
+                        <TableCell align="center"><img src={row.image} width="400px" height="400px" /></TableCell>
                         <TableCell component="th" id={labelId} scope="row" align="center" padding="none">
                           {row.timestamp}
                         </TableCell>
@@ -349,6 +362,7 @@ export default function Results() {
                             </Link>
                           )}
                         </TableCell>
+                        <TableCell align="center">{row.rating}</TableCell>
                       </TableRow>
                     );
                   })}
